@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天 - 聊天应用</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 自定义CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">聊天应用</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">欢迎，{{ current_user.username }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="fa fa-sign-out"></i> 退出登录
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="chat-content">
+            <!-- 在线用户列表 -->
+            <div class="online-users">
+                <div class="users-header">
+                    <h5><i class="fa fa-users"></i> 在线用户 ({{ online_users|length }})</h5>
+                </div>
+                <div class="users-list" id="online-users-list">
+                    {% for user in online_users %}
+                        <div class="user-item">
+                            <i class="fa fa-circle online-status"></i>
+                            <span>{{ user.username }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- 聊天消息区域 -->
+            <div class="chat-messages" id="chat-messages">
+                {% for message in messages %}
+                    <div class="message-item">
+                        <div class="message-header">
+                            <span class="message-username">{{ message.sender.username }}</span>
+                            <span class="message-time">{{ message.created_at.strftime('%H:%M:%S') }}</span>
+                        </div>
+                        <div class="message-content">
+                            {{ message.content }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- 消息输入区域 -->
+            <div class="message-input-container">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="message-input" placeholder="输入消息... (支持 @天气 城市, @60s新闻, @音乐 歌曲名)" autocomplete="off">
+                    <button class="btn btn-primary" id="send-button">
+                        <i class="fa fa-paper-plane"></i> 发送
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 自定义JS -->
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
